@@ -1,4 +1,4 @@
-FROM python:3-alpine3.12
+FROM python:3.10-alpine
 
 # Grab Flask, the most extremely awesome Python module ever!
 RUN pip3 install Flask
