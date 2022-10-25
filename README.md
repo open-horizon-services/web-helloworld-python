@@ -1,4 +1,7 @@
 # web-helloworld-python
+![](https://img.shields.io/github/license/open-horizon-services/web-helloworld-python)
+![](https://img.shields.io/badge/amd64-yes-green)
+![](https://img.shields.io/github/contributors/open-horizon-services/web-helloworld-python)
 
 Extremely simple HTTP server (written in Python) that responds on port 8000 with a hello message.
 
