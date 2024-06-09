@@ -7,16 +7,23 @@ TIME_OUT ?= 30
 # The Open Horizon Exchange's organization ID namespace where you will be publishing files
 HZN_ORG_ID ?= examples
 
-export SERVICE_NAME ?= "web-hello-python"
-PATTERN_NAME ?= "pattern-web-helloworld-python"
+export SERVICE_NAME ?= web-hello-python
+PATTERN_NAME ?= pattern-web-helloworld-python
 DEPLOYMENT_POLICY_NAME ?= deployment-policy-web-helloworld-python
 NODE_POLICY_NAME ?= node-policy-web-helloworld-python
-export SERVICE_VERSION ?= "1.0.0
+export SERVICE_VERSION ?= 1.0.0
 export SERVICE_CONTAINER := $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)
-ARCH ?= "amd64"
+ARCH ?= amd64
 
 # Detect Operating System running Make
 OS := $(shell uname -s)
+
+check:
+	@echo "=================="
+	@echo "SERVICE DEFINITION"
+	@echo "=================="
+	@cat service.definition.json | envsubst
+	@echo ""
 
 # Leave blank for open DockerHub containers
 # CONTAINER_CREDS:=-r "registry.wherever.com:myid:mypw"
