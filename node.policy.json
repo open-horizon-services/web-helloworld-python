@@ -1,7 +1,18 @@
 {
-  "properties": [
-    { "name": "example", "value": "web-helloworld-python" }
-  ],
+    "properties": [
+		{
+			"name": "openhorizon.allowPrivileged",
+			"value": false
+		},
+		{
+			"name": "purpose",
+			"value": "learning"
+		},
+		{
+			"name": "preferredLanguage",
+			"value": "Python"
+		}
+],
   "constraints": [
     "itsdangerous != 2.1.2"
   ]
