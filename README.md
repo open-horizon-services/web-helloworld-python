@@ -87,5 +87,30 @@ make publish-service-policy
 ```sh
 make publish-deployment-policy
 ```
+### All Makefile targets
+
+* `default` - executes the build, and then run targets
+* `build` - performs a docker build of the container to create a local image
+* `dev` - stops the container if it is running, builds, and then manually runs the container image locally while connectingto a terminal in the container.  Type "exit" to disconnect.
+* `run` - stops the container if it is running, then manually runs the container locally
+* `check` - populate the service definition with your current environment variables so you can confirm that the actual output matches your intended output
+* `test` - request the web page from the web server to confirm that it is running and available
+* `push` - Uploads your built container image to DockerHub (assumes you have performed a `docker login` and that your `DOCKER_HUB_ID` variable is set).
+* `publish` - Publish the service definition and policy files, and the deployment policy file, to the hub in your organization
+* `remove` - Remove the deployment policy, service policy, and service definition files from the hub in your organization.  Note: this will also automatically cancel any agreements that depended on those policies, since they no longer exist.
+* `publish-service` - Publish the service definition file to the hub in your organization
+* `remove-service` - Remove the service definition file from the hub in your organization
+* `publish-service-policy` - Publish the [service policy](https://github.com/open-horizon/examples/blob/master/edge/services/helloworld/PolicyRegister.md#service-policy) file to the hub in your org
+* `remove-service-policy` - Remove the service policy file from the hub in your org
+* `publish-deployment-policy` - Publish a [deployment policy](https://github.com/open-horizon/examples/blob/master/edge/services/helloworld/PolicyRegister.md#deployment-policy) for the service to the hub in your org
+* `remove-deployment-policy` - Remove a deployment policy for the service from the hub in your org
+* `publish-pattern` - Publish the service pattern file to the hub in your organization.  Note: this is a legacy approach and cannot co-exist with any service deployments on the same host.
+* `stop` - halt a locally-run container
+* `clean` - remove the container image from the local cache
+* `agent-run` - register your agent's [node policy](https://github.com/open-horizon/examples/blob/master/edge/services/helloworld/PolicyRegister.md#node-policy) with the hub
+* `agent-run-pattern` - register your agent with the hub using the pattern
+* `agent-stop` - unregister your agent with the hub, halting all agreements and stopping containers
+* `deploy-check` - confirm that a registered agent is compatible with the service and deployment
+* `log` - check the agent event logs
 
 
