@@ -1,30 +1,29 @@
 {
-  "label": "$SERVICE_NAME Deployment Policy",
-  "description": "A Horizon Deployment Policy example to run $SERVICE_NAME",
-  "service": {
-    "name": "$SERVICE_NAME",
-    "org": "$HZN_ORG_ID",
-    "arch": "*",
-    "serviceVersions": [
-      {
-        "version": "$SERVICE_VERSION",
-        "priority":{}
-      }
-    ]
-  },
-  "properties": [
-  ],
-  "constraints": [
-    "example == web-helloworld-python"
-    "purpose == learning",
-    "preferredLanguage == Python"
-  ],
-  "userInput": [
-    {
-      "serviceOrgid": "$HZN_ORG_ID",
+    "label": "$SERVICE_NAME Deployment Policy",      
+    "description": "Policy to auto deploy $SERVICE_NAME",
+    "service": {       
+      "name": "$SERVICE_NAME",
+      "org": "$HZN_ORG_ID",    
+      "arch": "*",    
+      "serviceVersions": [ 
+        {
+          "version": "$SERVICE_VERSION",
+          "priority":{}
+        }
+      ]
+    },
+    "properties": [
+    ],
+    "constraints": [ 
+         "purpose == learning",
+         "preferredLanguage == Python"
+    ], 
+    "userInput": [ 
+      {            
+        "serviceOrgid": "$HZN_ORG_ID",
         "serviceUrl": "$SERVICE_NAME",
         "serviceVersionRange": "[0.0.0,INFINITY)",
         "inputs": []
-    }
-  ]
-}
+      }
+    ]
+}  
