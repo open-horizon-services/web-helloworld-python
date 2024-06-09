@@ -18,13 +18,6 @@ ARCH ?= amd64
 # Detect Operating System running Make
 OS := $(shell uname -s)
 
-check:
-	@echo "=================="
-	@echo "SERVICE DEFINITION"
-	@echo "=================="
-	@cat service.definition.json | envsubst
-	@echo ""
-
 # Leave blank for open DockerHub containers
 # CONTAINER_CREDS:=-r "registry.wherever.com:myid:mypw"
 CONTAINER_CREDS ?=
@@ -84,19 +77,7 @@ push:
 	docker push $(SERVICE_CONTAINER)
 
 publish: publish-service publish-service-policy publish-deployment-policy
-	@ARCH=$(ARCH) \
-      SERVICE_NAME="$(SERVICE_NAME)" \
-      SERVICE_VERSION="$(SERVICE_VERSION)"\
-      SERVICE_CONTAINER="$(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)" \
-      SERVICE_CONTAINER="$(SERVICE_CONTAINER) \
-      hzn exchange service publish -O $(CONTAINER_CREDS) -f service.definition.json --pull-image
-	@echo ""
-
-	@docker rm -f ${SERVICE_NAME} >/dev/null 2>&1 || :
-
-clean:
-	@docker rmi -f $(SERVICE_CONTAINER) >/dev/null 2>&1 || :
-
+	
 publish-service:
 	@echo "=================="
 	@echo "PUBLISHING SERVICE"
@@ -104,7 +85,12 @@ publish-service:
         @hzn exchange service publish -O $(CONTAINER_CREDS) --json-file=service.definition.json --pull-image
 
 remove-service:
-	@hzn service log -f $(SERVICE_NAME)
+	@echo "=================="
+	@echo "REMOVING SERVICE"
+	@echo "=================="
+	@hzn exchange service remove -f $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
+	@echo ""
+
 
 publish-service-policy:
 	@echo "========================="
