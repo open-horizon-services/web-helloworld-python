@@ -7,11 +7,12 @@ TIME_OUT ?= 30
 # The Open Horizon Exchange's organization ID namespace where you will be publishing files
 HZN_ORG_ID ?= examples
 
-SERVICE_NAME ?= "web-hello-python"
+export SERVICE_NAME ?= "web-hello-python"
 PATTERN_NAME ?= "pattern-web-helloworld-python"
 DEPLOYMENT_POLICY_NAME ?= deployment-policy-web-helloworld-python
 NODE_POLICY_NAME ?= node-policy-web-helloworld-python
-SERVICE_VERSION ?= "1.0.0"
+export SERVICE_VERSION ?= "1.0.0
+export SERVICE_CONTAINER := $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)
 ARCH ?= "amd64"
 
 # Detect Operating System running Make
@@ -24,7 +25,7 @@ CONTAINER_CREDS ?=
 default: build run
 
 build:
-	docker build -t $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) .
+	docker build -t $(SERVICE_CONTAINER) .
 
 publish: publish-service publish-service-policy publish-deployment-policy
 
@@ -34,25 +35,25 @@ dev: stop build
 	docker run -it -v `pwd`:/outside \
           --name ${SERVICE_NAME} \
           -p 8000:8000 \
-          $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) /bin/bash
+          SERVICE_CONTAINER /bin/bash
 
 run: stop
 	docker run -d \
           --name ${SERVICE_NAME} \
           --restart unless-stopped \
           -p 8000:8000 \
-          $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)
+          $(SERVICE_CONTAINER)
 
 check-syft:
 	@echo "=================="
 	@echo "Generating SBoM syft-output file..."
 	@echo "=================="
-	syft $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) > syft-output
+	syft $(SERVICE_CONTAINER) > syft-output
 	cat syft-output
 
 # add SBOM for the source code 
 check-grype:
-	grype $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) > grype-output
+	grype $(SERVICE_CONTAINER) > grype-output
 	cat grype-output
 
 sbom-policy-gen:
@@ -73,7 +74,21 @@ test: run
 		false ;}
 
 push:
-	docker push $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) 
+	docker push $(SERVICE_CONTAINER)
+
+publish: publish-service publish-service-policy publish-deployment-policy
+	@ARCH=$(ARCH) \
+      SERVICE_NAME="$(SERVICE_NAME)" \
+      SERVICE_VERSION="$(SERVICE_VERSION)"\
+      SERVICE_CONTAINER="$(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)" \
+      SERVICE_CONTAINER="$(SERVICE_CONTAINER) \
+      hzn exchange service publish -O $(CONTAINER_CREDS) -f service.definition.json --pull-image
+	@echo ""
+
+	@docker rm -f ${SERVICE_NAME} >/dev/null 2>&1 || :
+
+clean:
+	@docker rmi -f $(SERVICE_CONTAINER) >/dev/null 2>&1 || :
 
 publish-service:
 	@echo "=================="
