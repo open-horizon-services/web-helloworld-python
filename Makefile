@@ -1,12 +1,21 @@
-# Extremely simple HTTP server that responds on port 8000 with a hello message.
+# Extremely simple HTTP server that responds on port 8000 with a hello message in HTML format.
 
 DOCKER_HUB_ID ?= ibmosquito
-SERVICE_NAME ?= web-hello-python
-SERVICE_VERSION ?= 1.0.0
-PATTERN_NAME ?= pattern-web-hello-python
-ARCH ?= amd64
 MATCH ?= "Hello"
 TIME_OUT ?= 30
+
+# The Open Horizon Exchange's organization ID namespace where you will be publishing files
+HZN_ORG_ID ?= examples
+
+SERVICE_NAME ?= "web-hello-python"
+PATTERN_NAME ?= "pattern-web-helloworld-python"
+DEPLOYMENT_POLICY_NAME ?= deployment-policy-web-helloworld-python
+NODE_POLICY_NAME ?= node-policy-web-helloworld-python
+SERVICE_VERSION ?= "1.0.0"
+ARCH ?= "amd64"
+
+# Detect Operating System running Make
+OS := $(shell uname -s)
 
 # Leave blank for open DockerHub containers
 # CONTAINER_CREDS:=-r "registry.wherever.com:myid:mypw"
@@ -16,6 +25,10 @@ default: build run
 
 build:
 	docker build -t $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) .
+
+publish: publish-service publish-service-policy publish-deployment-policy
+
+remove: remove-deployment-policy remove-service-policy remove-service
 
 dev: stop build
 	docker run -it -v `pwd`:/outside \
@@ -48,12 +61,6 @@ sbom-policy-gen:
 	@echo "=================="
 	./sbom-property-gen.sh
 
-publish-service-policy:
-	hzn exchange service addpolicy -f service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
-
-publish-deployment-policy:
-	hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
-
 test: run
 	@echo "=================="
 	@echo "Testing $(SERVICE_NAME)..."
@@ -65,16 +72,31 @@ test: run
 		echo "*** Service test failed! ***"; \
 		false ;}
 
-
 push:
 	docker push $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) 
 
 publish-service:
-	@ARCH=$(ARCH) \
-        SERVICE_NAME="$(SERVICE_NAME)" \
-        SERVICE_VERSION="$(SERVICE_VERSION)"\
-        SERVICE_CONTAINER="$(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)" \
-        hzn exchange service publish -O $(CONTAINER_CREDS) -f service.json --pull-image
+	@echo "=================="
+	@echo "PUBLISHING SERVICE"
+	@echo "=================="
+        @hzn exchange service publish -O $(CONTAINER_CREDS) --json-file=service.definition.json --pull-image
+
+remove-service:
+	@hzn service log -f $(SERVICE_NAME)
+
+publish-service-policy:
+	@echo "========================="
+	@echo "PUBLISHING SERVICE POLICY"
+	@echo "========================="
+	@hzn exchange service addpolicy -f service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
+	@echo ""
+
+remove-service-policy:
+	@echo "======================="
+	@echo "REMOVING SERVICE POLICY"
+	@echo "======================="
+	@hzn exchange service removepolicy -f $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
+	@echo ""
 
 publish-pattern:
 	@ARCH=$(ARCH) \
@@ -83,19 +105,53 @@ publish-pattern:
         PATTERN_NAME="$(PATTERN_NAME)" \
 	hzn exchange pattern publish -f pattern.json
 
+publish-deployment-policy:
+	@echo "============================"
+	@echo "PUBLISHING DEPLOYMENT POLICY"
+	@echo "============================"
+	@hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	@echo ""
+
+remove-deployment-policy:
+	@echo "=========================="
+	@echo "REMOVING DEPLOYMENT POLICY"
+	@echo "=========================="
+	@hzn exchange deployment removepolicy -f $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	@echo ""
+
+
 stop:
 	@docker rm -f ${SERVICE_NAME} >/dev/null 2>&1 || :
 
 clean:
 	@docker rmi -f $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) >/dev/null 2>&1 || :
 
-agent-run: agent-stop
-	@hzn register --pattern "${HZN_ORG_ID}/$(PATTERN_NAME)"
+agent-run:
+	@echo "================"
+	@echo "REGISTERING NODE"
+	@echo "================"
+	@hzn register --policy=node.policy.json
+	@watch hzn agreement list
 
+agent-run-pattern:
+	@hzn register --pattern "${HZN_ORG_ID}/$(PATTERN_NAME)"
+	
 agent-stop:
 	@hzn unregister -f
 
 deploy-check:
-	@hzn deploycheck all -t device -B deployment.policy.json --service-pol=service.policy.json --node-pol=node.policy.json
+	deploy-check:
+	@hzn deploycheck all -t device -B deployment.policy.json --service=service.definition.json --service-pol=service.policy.json --node-pol=node.policy.json
 
-.PHONY: build dev run push publish-service publish-pattern test stop clean agent-run agent-stop
+log:
+	@echo "========="
+	@echo "EVENT LOG"
+	@echo "========="
+	@hzn eventlog list
+	@echo ""
+	@echo "==========="
+	@echo "SERVICE LOG"
+	@echo "==========="
+	@hzn service log -f $(SERVICE_NAME)
+
+.PHONY: default build dev run test check push publish remove publish-service remove-service publish-service-policy remove-service-policy publish-pattern publish-deployment-policy remove-deployment-policy stop clean agent-run agent-run-pattern agent-stop deploy-check log
