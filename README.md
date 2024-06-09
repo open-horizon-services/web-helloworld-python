@@ -87,6 +87,12 @@ make publish-service-policy
 ```sh
 make publish-deployment-policy
 ```
+## Usage
+
+To manually run the `web-helloworld-python` service locally as a test, enter `make`.  It will build a container and then run it locally.  This is the equivalent of running `make build` and then `make run`.  Once it successfully builds and runs, you can test it by running `make test` to see the HTML returned from the web server that the container runs.  Entering `docker ps` will show you the `web-helloworld-go` container is running locally.  When you are done and want to stop the container, enter `make stop`.  Entering `docker ps` again will show you that the container is no longer runniing.  Finally, entering `make clean` will remove the image that you built.
+
+To create [the service definition](https://github.com/open-horizon/examples/blob/master/edge/services/helloworld/CreateService.md#build-publish-your-hw), publish it to the hub, and then form an agreement to download and run the service, enter `make publish`.  When installation is complete and an agreement has been formed, exit the watch command with Control-C.  You may then open the web page by entering `make test` or visiting [http://localhost:8000/](http://localhost:8000/) in a web browser.
+
 ### All Makefile targets
 
 * `default` - executes the build, and then run targets
@@ -97,7 +103,6 @@ make publish-deployment-policy
 * `test` - request the web page from the web server to confirm that it is running and available
 * `push` - Uploads your built container image to DockerHub (assumes you have performed a `docker login` and that your `DOCKER_HUB_ID` variable is set).
 * `publish` - Publish the service definition and policy files, and the deployment policy file, to the hub in your organization
-* `remove` - Remove the deployment policy, service policy, and service definition files from the hub in your organization.  Note: this will also automatically cancel any agreements that depended on those policies, since they no longer exist.
 * `publish-service` - Publish the service definition file to the hub in your organization
 * `remove-service` - Remove the service definition file from the hub in your organization
 * `publish-service-policy` - Publish the [service policy](https://github.com/open-horizon/examples/blob/master/edge/services/helloworld/PolicyRegister.md#service-policy) file to the hub in your org
