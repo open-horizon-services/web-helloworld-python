@@ -35,7 +35,7 @@ dev: stop build
 	docker run -it -v `pwd`:/outside \
           --name ${SERVICE_NAME} \
           -p 8000:8000 \
-          SERVICE_CONTAINER /bin/bash
+          $(SERVICE_CONTAINER) /bin/bash
 
 run: stop
 	docker run -d \
@@ -50,6 +50,13 @@ check-syft:
 	@echo "=================="
 	syft $(SERVICE_CONTAINER) > syft-output
 	cat syft-output
+
+check:
+	@echo "=================="
+	@echo "SERVICE DEFINITION"
+	@echo "=================="
+	@cat service.definition.json | envsubst
+	@echo ""
 
 # add SBOM for the source code 
 check-grype:
@@ -77,12 +84,15 @@ push:
 	docker push $(SERVICE_CONTAINER)
 
 publish: publish-service publish-service-policy publish-deployment-policy
+
+remove: remove-deployment-policy remove-service-policy remove-service
 	
 publish-service:
 	@echo "=================="
 	@echo "PUBLISHING SERVICE"
 	@echo "=================="
-        @hzn exchange service publish -O $(CONTAINER_CREDS) --json-file=service.definition.json --pull-image
+	@hzn exchange service publish -O $(CONTAINER_CREDS) --json-file=service.definition.json --pull-image
+	@echo ""
 
 remove-service:
 	@echo "=================="
@@ -132,7 +142,7 @@ stop:
 	@docker rm -f ${SERVICE_NAME} >/dev/null 2>&1 || :
 
 clean:
-	@docker rmi -f $(DOCKER_HUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION) >/dev/null 2>&1 || :
+	@docker rmi -f $(SERVICE_CONTAINER) >/dev/null 2>&1 || :
 
 agent-run:
 	@echo "================"
