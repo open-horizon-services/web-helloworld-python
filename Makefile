@@ -69,6 +69,9 @@ sbom-policy-gen:
 	@echo "=================="
 	./sbom-property-gen.sh
 
+test:
+	@curl -sS http://127.0.0.1:8000
+
 test: run
 	@echo "=================="
 	@echo "Testing $(SERVICE_NAME)..."
