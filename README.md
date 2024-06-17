@@ -49,6 +49,7 @@ make agent-run
 Then you can watch the agreement form:
 
 ```sh
+watch hzn agreement list
 ... (runs forever, so press Ctrl-C when you want to stop)
 ```
 Test the service:
