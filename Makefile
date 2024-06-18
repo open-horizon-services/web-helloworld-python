@@ -55,7 +55,7 @@ check:
 	@echo "=================="
 	@echo "SERVICE DEFINITION"
 	@echo "=================="
-	@cat service.definition.json | envsubst
+	@cat service.json | envsubst
 	@echo ""
 
 # add SBOM for the source code 
@@ -87,7 +87,7 @@ publish-service:
 	@echo "=================="
 	@echo "PUBLISHING SERVICE"
 	@echo "=================="
-	@hzn exchange service publish -O $(CONTAINER_CREDS) --json-file=service.definition.json --pull-image
+	@hzn exchange service publish -O $(CONTAINER_CREDS) --json-file=service.json --pull-image
 	@echo ""
 
 remove-service:
@@ -155,7 +155,7 @@ agent-stop:
 
 deploy-check:
 	deploy-check:
-	@hzn deploycheck all -t device -B deployment.policy.json --service=service.definition.json --service-pol=service.policy.json --node-pol=node.policy.json
+	@hzn deploycheck all -t device -B deployment.policy.json --service=service.json --service-pol=service.policy.json --node-pol=node.policy.json
 
 log:
 	@echo "========="
