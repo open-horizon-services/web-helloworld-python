@@ -27,10 +27,6 @@ default: build run
 build:
 	docker build -t $(SERVICE_CONTAINER) .
 
-publish: publish-service publish-service-policy publish-deployment-policy
-
-remove: remove-deployment-policy remove-service-policy remove-service
-
 dev: stop build
 	docker run -it -v `pwd`:/outside \
           --name ${SERVICE_NAME} \
