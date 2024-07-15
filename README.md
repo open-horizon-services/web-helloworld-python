@@ -39,6 +39,16 @@ To ensure the successful installation and operation of the Open Horizon service,
 2. **Edit Makefile:**
     Adjust the variables at the top of the Makefile as needed, including your Docker ID and unique names for your service and pattern.
 
+    ```shell
+    DOCKER_HUB_ID=your_docker_id
+    ARCH=amd64
+    ```
+    You can also override these default values by exporting them in your terminal before running any make commands. This way, you don't have to edit the values directly in the Makefile.
+   ```shell
+   export DOCKER_HUB_ID=my_docker_id
+   export ARCH=my_architecture
+   ```
+   
     Run `make clean` to confirm that the "make" utility is installed and workin
 
     Confirm that you have the Open Horizon agent installed by using the CLI to check the version:
