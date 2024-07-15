@@ -16,7 +16,6 @@
     ],
     "constraints": [ 
          "purpose == learning",
-         "preferredLanguage == Python"
     ], 
     "userInput": [ 
       {            
