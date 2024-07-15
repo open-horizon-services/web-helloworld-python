@@ -8,8 +8,11 @@ This Open Horizon service demonstrates a simple HTTP server written in Python. T
 
 ## Prerequisites
 
-To ensure the successful installation and operation of the Open Horizon service, the following prerequisites must be met:
+NOTE: If you plan to build a new image, a DockerHub login is required and export DOCKER_HUB_ID=[your DockerHub ID] before running installation and Makefile targets.
 
+NOTE: Export the "ARCH" environment variable to set a non-default value for the build process.
+
+To ensure the successful installation and operation of the Open Horizon service, the following prerequisites must be met:
 
 **Open Horizon Management Hub:** To publish this service and register your edge node, you must either [install the Open Horizon Management Hub](https://open-horizon.github.io/quick-start) or have access to an existing hub. You may also choose a downstream commercial distribution like IBM's Edge Application Manager. If you'd like to use the Open Horizon community hub, you may [apply for a temporary account](https://wiki.lfedge.org/display/LE/Open+Horizon+Management+Hub+Developer+Instance) at the Open Horizon community hub, where credentials will be provided.
 
