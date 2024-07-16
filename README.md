@@ -8,7 +8,6 @@ This Open Horizon service demonstrates a simple HTTP server written in Python. T
 
 ## Prerequisites
 
-```sh
 NOTE: If you plan to build a new image, a DockerHub login is required and export DOCKER_HUB_ID=[your DockerHub ID] before running installation and Makefile targets.
 
 NOTE: Export the "ARCH" environment variable to set a non-default value for the build process.
@@ -45,12 +44,13 @@ To ensure the successful installation and operation of the Open Horizon service,
     ARCH=amd64
     ```
     You can also override these default values by exporting them in your terminal before running any make commands. This way, you don't have to edit the values directly in the Makefile.
-   ```shell
-   export DOCKER_HUB_ID=my_docker_id
-   export ARCH=my_architecture
-   ```
+
+    ```shell
+     export DOCKER_HUB_ID=my_docker_id
+     export ARCH=my_architecture
+    ```
    
-    Run `make clean` to confirm that the "make" utility is installed and workin
+    Run `make clean` to confirm that the "make" utility is installed and working
 
     Confirm that you have the Open Horizon agent installed by using the CLI to check the version:
 
@@ -82,9 +82,7 @@ To ensure the successful installation and operation of the Open Horizon service,
     curl -sSL https://github.com/open-horizon/anax/releases/latest/download/agent-install.sh | bash -s -- -i anax: -k css: -c css: -p IBM/pattern-ibm.helloworld -w '*' -T 120
     ```
 
-## Usage
-
-### Using the Service Outside of Open Horizon
+### Using the Service Outside of Open Horizon:
 
 If you wish to use this service locally for development or testing purposes without integrating with the Open Horizon ecosystem, follow these commands:
 
@@ -94,29 +92,24 @@ make build
 # This command builds the Docker container from your Dockerfile, preparing it for local execution.
 
 make run
-
+# This runs the container locally. It will start the service on the designated port, making it accessible on your machine.
 ```
 
 Test the service:
 ```sh
 make test
-```
-Stop the running service
-```sh
-
-# This runs the container locally. It will start the service on the designated port, making it accessible on your machine.
-
-# Test the service
-make test
 # This command is used to run any predefined tests that check the functionality of the service. It ensures that the service responds correctly.
-
+```
+Stop running the service
+```sh
 make stop
-# Stops the running Docker container. Use this command when you are done with testing or running the service locally.
+# Stops running the Docker container. Use this command when you are done with testing or running the service locally.
 ```
 
-When you are ready to try it inside Open Horizon:
+### Using the Service Inside Open Horizon:
 ```sh
 docker login
+# Log in to your Docker registry where the container image will be pushed.
 ```
 Create a cryptographic signing key pair. This enables you to sign services when publishing them to the exchange. This step only needs to be done once.
 ```sh
@@ -124,21 +117,13 @@ hzn key create **yourcompany** **youremail**
 ```
 Build the service:
 ```sh
-
-### Using the Service Inside Open Horizon
- 
- ```shell
-docker login
-# Log in to your Docker registry where the container image will be pushed.
-
-hzn key create <yourcompany> <youremail>
-# This command generates cryptographic keys used to sign and verify the services and patterns you publish to the Open Horizon Management Hub.
-
-
 make build
 # Builds the Docker container from your Dockerfile, similar to the local build process.
-
+```
+Push it into your docker hub
+```
 make push
+# Pushes the built Docker image to your Docker registry, making it available for deployment through Open Horizon.
 ```
 Publish your service definition and policy, deployment policy files to the Horizon Exchange
 ```sh
@@ -147,66 +132,32 @@ make publish
 
 Once it is published, you can get the agent to deploy it:
 ```sh
-
-# Pushes the built Docker image to your Docker registry, making it available for deployment through Open Horizon.
-
-make publish-service
-# Publishes the service to the Open Horizon Management Hub.
-
-make publish-pattern
-# Publishes the deployment pattern to the Management Hub.
-
 make agent-run
 # Commands the local Open Horizon agent to run the service according to the published pattern.
+```
 
 Then you can watch the agreement form:
 
 ```sh
 watch hzn agreement list
-... (runs forever, so press Ctrl-C when you want to stop)
-```
-Test the service:
-```sh
-# Watch agreements and service logs
-watch hzn agreement list
 # Monitors and displays the agreements between your edge node and the management hub, indicating which services are deployed.
 
+... (runs forever, so press Ctrl-C when you want to stop)
+```
+
+Test the service:
+```sh
 docker ps
 # Lists all running Docker containers on your machine, allowing you to see the service container in action.
 
 make test
 # Runs tests to ensure the service is operating correctly within the Open Horizon environment.
+```
 
+Then when you are done you can get the agent to stop running it:
 ```sh
 make agent-stop
 # Stops the Open Horizon agent, effectively undeploying the service from your node.
-```
-
-## Advanced Details
-
-### SBoM Service Policy Generation
-
-A Software Bill of Materials (SBoM) is a detailed list of components and versions that comprise a piece of software. With software exploints on the rise and open source code being critical to nearly every significant software project today, SBoM education is becoming more and more important. The following steps will lead you through creating an SBoM for the `web-hello-python:1.0.0` image, publish the SBoM data as a service policy, and use the Open-Horizon policy engine to control the deployment of the `web-hello-python` container to an edge node.
-
-1. Create an SBoM for the `web-hello-python:1.0.0` docker image built in the previous section:
-```sh
-make check-syft
-```
-
-2. Generate a service policy from the SBoM data:
-```sh
-make sbom-policy-gen
-```
-
-3. Publish the service and service policy:
-```sh
-make publish-service
-make publish-service-policy
-```
-
-4. Publish a deployment policy for the service:
-```sh
-make publish-deployment-policy
 ```
 
 ## Usage
@@ -214,6 +165,50 @@ make publish-deployment-policy
 To manually run the `web-helloworld-python` service locally as a test, enter `make`.  It will build a container and then run it locally.  This is the equivalent of running `make build` and then `make run`.  Once it successfully builds and runs, you can test it by running `make test` to see the HTML returned from the web server that the container runs.  Entering `docker ps` will show you the `web-helloworld-python` container is running locally.  When you are done and want to stop the container, enter `make stop`.  Entering `docker ps` again will show you that the container is no longer runniing.  Finally, entering `make clean` will remove the image that you built.
 
 To create [the service definition](https://github.com/open-horizon/examples/blob/master/edge/services/helloworld/CreateService.md#build-publish-your-hw), publish it to the hub, and then form an agreement to download and run the service, enter `make publish`.  When installation is complete and an agreement has been formed, exit the watch command with Control-C.  You may then open the web page by entering `make test` or visiting [http://localhost:8000/](http://localhost:8000/) in a web browser.
+
+## Advanced Details
+
+### SBoM Service Policy Generation
+
+A Software Bill of Materials (SBoM) is a detailed list of components and versions that comprise a piece of software. With software exploints on the rise and open source code being critical to nearly every significant software project today, SBoM education is becoming more and more important. The following steps will lead you through creating an SBoM for the `web-hello-python:1.0.0` image, publish the SBoM data as a service policy, and use the Open-Horizon policy engine to control the deployment of the `web-hello-python` container to an edge node.
+
+Generate and publish an SBoM for this service:
+
+1. Create an SBoM for the `web-hello-python:1.0.0` docker image built in the previous section::
+```shell
+make check-syft
+# This command uses the Syft tool to perform a comprehensive analysis of the container image built in previous steps. It outputs an SBoM that lists all components, their versions, and their dependencies within the image.
+```
+
+2. Generate and publish the service policy from SBoM data:
+```shell
+make sbom-policy-gen
+# Generates a service policy based on the SBoM. This policy includes details about allowable software components and their versions, which can be used to enforce security standards across all deployments.
+
+make publish-service
+# Publishes the newly created service with its SBoM data to the Open Horizon Management Hub. This step is essential to ensure that all edge nodes using this service are aware of its components and comply with its policies.
+
+make publish-service-policy
+# Publishes the service policy associated with your service. This policy controls the deployment of the service based on the SBoM, ensuring that only compliant devices can run the service.
+
+```
+3. Publish a deployment policy for the service:
+```shell
+make publish-deployment-policy
+# This step involves publishing a deployment policy that defines the criteria under which the service should be deployed to edge devices. This includes hardware requirements, geographical location, or any other relevant conditions that must be met for the service to be deployed.
+```
+
+### Debugging
+
+The Makefile includes several targets to assist you in inspecting what is happening to see if they match your expectations.  They include:
+
+`make log` to see both the event logs and the service logs.
+
+`make check` to see the values in your environment variables and how they are populated into the service definition file.
+
+`make deploy-check` to see if the properties and constraints that you've configured match each other to potentially form an agreement.
+
+`make test` to see if the web server is responding.
 
 ### All Makefile targets
 
