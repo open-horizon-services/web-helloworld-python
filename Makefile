@@ -150,7 +150,6 @@ agent-stop:
 	@hzn unregister -f
 
 deploy-check:
-	deploy-check:
 	@hzn deploycheck all -t device -B deployment.policy.json --service=service.json --service-pol=service.policy.json --node-pol=node.policy.json
 
 log:
