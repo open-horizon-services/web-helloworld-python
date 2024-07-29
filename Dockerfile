@@ -7,7 +7,7 @@ RUN pip3 install --upgrade pip
 RUN pip3 install Flask
 
 # Dev tools (can be removed for production)
-# RUN apt update && apt install -y vim curl jq
+# RUN apt-get -y update && apt-get -y install vim curl jq
 
 # Copy in the source file
 COPY ./web-hello.py /
