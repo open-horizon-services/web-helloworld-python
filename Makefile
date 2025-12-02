@@ -5,7 +5,7 @@ MATCH ?= "Hello"
 TIME_OUT ?= 30
 
 # The Open Horizon Exchange's organization ID namespace where you will be publishing files
-HZN_ORG_ID ?= examples
+export HZN_ORG_ID ?= myorg
 
 export SERVICE_NAME ?= web-hello-python
 PATTERN_NAME ?= pattern-web-helloworld-python
