@@ -77,6 +77,9 @@ push:
 
 publish: publish-service publish-service-policy publish-deployment-policy
 
+# target to test BYO blessed samples
+publish-only: publish-service publish-service-policy publish-deployment-policy
+
 remove: remove-deployment-policy remove-service-policy remove-service
 	
 publish-service:
@@ -163,4 +166,4 @@ log:
 	@echo "==========="
 	@hzn service log -f $(SERVICE_NAME)
 
-.PHONY: default build dev run test check push publish remove publish-service remove-service publish-service-policy remove-service-policy publish-pattern publish-deployment-policy remove-deployment-policy stop clean agent-run agent-run-pattern agent-stop deploy-check log
+.PHONY: default build dev run test check push publish publish-only remove publish-service remove-service publish-service-policy remove-service-policy publish-pattern publish-deployment-policy remove-deployment-policy stop clean agent-run agent-run-pattern agent-stop deploy-check log
