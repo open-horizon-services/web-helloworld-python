@@ -5,7 +5,7 @@ MATCH ?= "Hello"
 TIME_OUT ?= 30
 
 # The Open Horizon Exchange's organization ID namespace where you will be publishing files
-HZN_ORG_ID ?= examples
+export HZN_ORG_ID ?= myorg
 
 export SERVICE_NAME ?= web-hello-python
 PATTERN_NAME ?= pattern-web-helloworld-python
@@ -76,6 +76,9 @@ push:
 	docker push $(SERVICE_CONTAINER)
 
 publish: publish-service publish-service-policy publish-deployment-policy
+
+# target to test BYO blessed samples
+publish-only: publish-service publish-service-policy publish-deployment-policy
 
 remove: remove-deployment-policy remove-service-policy remove-service
 	
@@ -163,4 +166,4 @@ log:
 	@echo "==========="
 	@hzn service log -f $(SERVICE_NAME)
 
-.PHONY: default build dev run test check push publish remove publish-service remove-service publish-service-policy remove-service-policy publish-pattern publish-deployment-policy remove-deployment-policy stop clean agent-run agent-run-pattern agent-stop deploy-check log
+.PHONY: default build dev run test check push publish publish-only remove publish-service remove-service publish-service-policy remove-service-policy publish-pattern publish-deployment-policy remove-deployment-policy stop clean agent-run agent-run-pattern agent-stop deploy-check log
