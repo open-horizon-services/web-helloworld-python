@@ -1,0 +1,50 @@
+name: Bug Report🐛
+description: Create a report to help us improve
+title: "Bug🐛: "
+labels: [bug]
+
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to file a Bug report for the web-helloworld-python service
+  - type: textarea
+    attributes:
+      label: Describe the bug.
+      description: "Enter a clear and concise description of what the bug is"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the steps to reproduce the behavior
+      description: "Be clear and concise while describing the steps to ensure that it can be reproduced and potentially fixed"
+      placeholder: |
+        1. Deploy the service with '...'
+        2. Access the endpoint '....'
+        3. Observe the behavior '....'
+        4. See error
+  - type: textarea
+    attributes:
+      label: Expected behavior.
+      description: "Enter a clear and concise description of what you expected to happen"
+  - type: textarea
+    attributes:
+      label: Screenshots or logs.
+      description: "If applicable, add screenshots or log output to help explain your problem"
+  - type: input
+    attributes:
+      label: Operating environment
+      description: "What operating system and version are you using? If running on Open Horizon, include the agent version and architecture."
+      placeholder: |
+        Ubuntu 20.04.1 LTS, Open Horizon Agent 2.30.0, amd64
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Service version
+      description: "What version of the web-helloworld-python service are you using?"
+      placeholder: |
+        1.0.0
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: "Add any other context or screenshots to clarify your issue here."
